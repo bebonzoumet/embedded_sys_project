@@ -20,3 +20,12 @@ Para o teste da câmera foi utilizado o Sketch_06.1_CameraWebServer(https://gith
 - Conexão com a câmera: Usamos o Acesso Pessoal para conseguir gerar um IP para nos conectarmos com a câmera para ver a imagem sendo demonstrada, porém quando usamos pelo Iphone o Firewall da Apple não permitiu para que o IP fosse mostrado, então mudamos para o Android e foi normalmente, segue em seguida um print da tela da câmera 
 
 <img width="866" alt="image" src="https://github.com/bebonzoumet/embedded_sys_project/assets/82557298/380bef09-4f67-432a-b876-601fd6df502f">
+
+
+
+
+
+
+
+
+https://github.com/RuiSantosdotme/ESP32-CAM-Arduino-IDE/blob/master/ESP32-CAM-Video-Streaming/ESP32-CAM-Access-Point-AP-Video-Streaming.ino
