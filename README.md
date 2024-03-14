@@ -29,3 +29,15 @@ Para o teste da câmera foi utilizado o Sketch_06.1_CameraWebServer(https://gith
 
 
 https://github.com/RuiSantosdotme/ESP32-CAM-Arduino-IDE/blob/master/ESP32-CAM-Video-Streaming/ESP32-CAM-Access-Point-AP-Video-Streaming.ino
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#TESTES
+  Utilizamos alguns momentos das aulas para fazer apurações dos seguintes aspectos:
+  
+  Temperatura -> A placa age em uma temperatura média de 31°C sem a utilização da câmera;
+               Quando acionamos a placa com o script a placa começa a esquentar gradativamente até uma média de 38°C até 40°C.
+
+  Largura de Banda -> Usando o software "Wireshark" medimos a média da largura de banda da placa ativa, sendo de 1045Kb/s.
+
+  Testamos a placa em modo "AccessPoint" conectado direto a uma rede criada por ela mesmo, sem que seja necessário conectar-se a um access point externo (roteador, etc), o problema encontrado foi a taxa de quadros por segundos (FPS) enviado pela placa que foi surpreendentemente baixa, na qual para o escopo do projeto afetaria diretamente o resultado final.
