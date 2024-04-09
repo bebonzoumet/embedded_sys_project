@@ -1,6 +1,3 @@
-//Programa: comunicação MQTT com ESP32
-//Autor: Pedro Bertoleti
- 
 /* Headers */ 
 #include <WiFi.h> /* Header para uso das funcionalidades de wi-fi do ESP32 */
 #include <PubSubClient.h>  /*  Header para uso da biblioteca PubSubClient */
