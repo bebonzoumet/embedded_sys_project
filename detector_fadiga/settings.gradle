@@ -25,6 +25,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {url = uri("https://repo.eclipse.org/content/repositories/paho-releases/") }
     }
 }
 rootProject.name = "MP Face Landmarker"

@@ -48,9 +48,11 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
     private var yep2: Float = 0f
 
     private var tempoOlhosFechados: Long = 0
-    private val intervaloCansado = 800000 //1 segundo = 100000
+    private val intervaloCansado = 2000 //1 segundo = 1000
 
     private var mediaPlayer: MediaPlayer? = null
+    private var mqtt = mqttHandler()
+    private final val broker_url = "tcp://10.183.117.184:1883"
 
     init {
         initPaints()
@@ -117,6 +119,8 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
         imageWidth: Int,
         runningMode: RunningMode = RunningMode.IMAGE
     ) {
+        mqtt.connect(url, "cliente1")
+
         results = faceLandmarkerResults
         // Printing the landmarks with their indices
         results?.let { faceLandmarkerResult ->
@@ -149,8 +153,9 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
                             tempoOlhosFechados += 16
                             //println("Olho fechado!")
                             if (tempoOlhosFechados >= intervaloCansado) {
-                                println("Você está cansado")
+                                //println("Você está cansado")
                                 playSound()
+                                mqtt.publish("cansado", "Motorista cansado")
                                 // Reseta o tempo
                                 tempoOlhosFechados = 0
                             }
