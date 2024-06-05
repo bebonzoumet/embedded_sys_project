@@ -42,8 +42,10 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
     private var imageWidth: Int = 1
     private var imageHeight: Int = 1
 
-    private var yp1: Float = 0f
-    private var yp2: Float = 0f
+    private var ydp1: Float = 0f
+    private var ydp2: Float = 0f
+    private var yep1: Float = 0f
+    private var yep2: Float = 0f
 
     private var tempoOlhosFechados: Long = 0
     private val intervaloCansado = 800000 //1 segundo = 100000
@@ -123,21 +125,27 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
                     val x = normalizedLandmark.x()
                     val y = normalizedLandmark.y()
                     val z = normalizedLandmark.z()
-                    val indexDesejado1 = 145
-                    val indexDesejado2 = 159
-                    val escolha = true
+                    val indexDesejadoDireito1 = 145
+                    val indexDesejadoDireito2 = 159
+                    val indexDesejadoEsquerdo1 = 374
+                    val indexDesejadoEsquerdo2 = 386
 
-                    if(pointIndex == indexDesejado1 || pointIndex == indexDesejado2 || escolha) {
+                    if(pointIndex == indexDesejadoDireito1 || pointIndex == indexDesejadoDireito2 || pointIndex == indexDesejadoEsquerdo1 || pointIndex == indexDesejadoEsquerdo2) {
 
                         //println("Point $pointIndex - x: $x, y: $y, z: $z")
-                        if(pointIndex == indexDesejado1) {
-                             yp1 = y;
-                        } else if(pointIndex == indexDesejado2) {
-                             yp2 = y;
+                        if(pointIndex == indexDesejadoDireito1) {
+                             ydp1 = y;
+                        } else if(pointIndex == indexDesejadoDireito2) {
+                             ydp2 = y;
+                        } else if(pointIndex == indexDesejadoEsquerdo1) {
+                             yep1 = y;
+                        } else if(pointIndex == indexDesejadoEsquerdo2) {
+                            yep2 = y;
                         }
 
-                        val diff = yp1 - yp2;
-                        if (diff < 0.009f) {
+                        val diff1 = ydp1 - ydp2;
+                        val diff2 = yep1 - yep2;
+                        if (diff1 < 0.009f && diff2 < 0.009f ) {
                             tempoOlhosFechados += 16
                             //println("Olho fechado!")
                             if (tempoOlhosFechados >= intervaloCansado) {
