@@ -1,7 +1,5 @@
-package com.google.mediapipe.examples.facelandmarker
-
 /*
- * Copyright 2023 The TensorFlow Authors. All Rights Reserved.
+ * Copyright 2022 The TensorFlow Authors. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +13,8 @@ package com.google.mediapipe.examples.facelandmarker
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.google.mediapipe.examples.handlandmarker
+
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -23,16 +23,15 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.google.mediapipe.tasks.vision.core.RunningMode
-import com.google.mediapipe.tasks.vision.facelandmarker.FaceLandmarker
-import com.google.mediapipe.tasks.vision.facelandmarker.FaceLandmarkerResult
+import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
+import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarkerResult
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.reflect.typeOf
 
 class OverlayView(context: Context?, attrs: AttributeSet?) :
     View(context, attrs) {
 
-    private var results: FaceLandmarkerResult? = null
+    private var results: HandLandmarkerResult? = null
     private var linePaint = Paint()
     private var pointPaint = Paint()
 
@@ -40,11 +39,9 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
     private var imageWidth: Int = 1
     private var imageHeight: Int = 1
 
-    private var yp1: Float = 0f
-    private var yp2: Float = 0f
+    private var arraylistX = ArrayList<Float>()
+    private var arraylistY = ArrayList<Float>()
 
-    private var tempoOlhosFechados: Long = 0
-    private val intervaloCansado = 500000 //1 segundo = 100000
     init {
         initPaints()
     }
@@ -70,76 +67,47 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
-        if(results == null || results!!.faceLandmarks().isEmpty()) {
-            clear()
-            return
-        }
+        results?.let { handLandmarkerResult ->
+            for (landmark in handLandmarkerResult.landmarks()) {
+                // Encontrar o índice do ponto do dedo indicador
+                val indexFingerPoint = landmark.get(8) // 8 é o índice do dedo indicador
 
-        results?.let { faceLandmarkerResult ->
+                // Acessar as coordenadas x e y do ponto do dedo indicador
+                val indexFingerX = indexFingerPoint.x() * imageWidth * scaleFactor
+                val indexFingerY = indexFingerPoint.y() * imageHeight * scaleFactor
 
-            for(landmark in faceLandmarkerResult.faceLandmarks()) {
-                for(normalizedLandmark in landmark) {
-                    canvas.drawPoint(normalizedLandmark.x() * imageWidth * scaleFactor, normalizedLandmark.y() * imageHeight * scaleFactor, pointPaint)
+                arraylistX.add(indexFingerX)
+                arraylistY.add(indexFingerY)
+                println(indexFingerX);
+
+                // Renderizar o ponto do dedo indicador
+                for (pontoX in arraylistX){
+                    canvas.drawPoint(pontoX, arraylistY[arraylistX.indexOf(pontoX)], pointPaint)
                 }
-            }
 
-            FaceLandmarker.FACE_LANDMARKS_CONNECTORS.forEach {
-                canvas.drawLine(
-                    faceLandmarkerResult.faceLandmarks().get(0).get(it!!.start()).x() * imageWidth * scaleFactor,
-                    faceLandmarkerResult.faceLandmarks().get(0).get(it.start()).y() * imageHeight * scaleFactor,
-                    faceLandmarkerResult.faceLandmarks().get(0).get(it.end()).x() * imageWidth * scaleFactor,
-                    faceLandmarkerResult.faceLandmarks().get(0).get(it.end()).y() * imageHeight * scaleFactor,
-                    linePaint)
+                // Renderizar as conexões dos dedos
+                HandLandmarker.HAND_CONNECTIONS.forEach { connection ->
+                    val startPoint = landmark.get(connection!!.start())
+                    val endPoint = landmark.get(connection.end())
+                    canvas.drawLine(
+                        startPoint.x() * imageWidth * scaleFactor,
+                        startPoint.y() * imageHeight * scaleFactor,
+                        endPoint.x() * imageWidth * scaleFactor,
+                        endPoint.y() * imageHeight * scaleFactor,
+                        linePaint
+                    )
+                }
             }
         }
     }
 
     fun setResults(
-        faceLandmarkerResults: FaceLandmarkerResult,
+        handLandmarkerResults: HandLandmarkerResult,
         imageHeight: Int,
         imageWidth: Int,
         runningMode: RunningMode = RunningMode.IMAGE
     ) {
-        results = faceLandmarkerResults
-        // Printing the landmarks with their indices
-        results?.let { faceLandmarkerResult ->
-            for ((landmarkIndex, landmark) in faceLandmarkerResult.faceLandmarks().withIndex()) {
-                for ((pointIndex, normalizedLandmark) in landmark.withIndex()) {
-                    val x = normalizedLandmark.x()
-                    val y = normalizedLandmark.y()
-                    val z = normalizedLandmark.z()
-                    val indexDesejado1 = 145
-                    val indexDesejado2 = 159
-                    val escolha = true
-
-                    if(pointIndex == indexDesejado1 || pointIndex == indexDesejado2 || escolha == true) {
-
-                        //println("Point $pointIndex - x: $x, y: $y, z: $z")
-                        if(pointIndex == indexDesejado1) {
-                             yp1 = y;
-                        } else if(pointIndex == indexDesejado2) {
-                             yp2 = y;
-                        }
-
-                        val diff = yp1 - yp2;
-                        if (diff < 0.009f) {
-                            tempoOlhosFechados += 16
-                            //println("Olho fechado!")
-                            if (tempoOlhosFechados >= intervaloCansado) {
-                                println("Você está cansado")
-                                // Reseta o tempo
-                                tempoOlhosFechados = 0
-                            }
-
-                        } else {
-                            tempoOlhosFechados = 0
-                            //println("Olho aberto!")
-                        }
-                    }
-                }
-            }
-        }
-
+        results = handLandmarkerResults
 
         this.imageHeight = imageHeight
         this.imageWidth = imageWidth
@@ -161,6 +129,5 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
 
     companion object {
         private const val LANDMARK_STROKE_WIDTH = 8F
-        private const val TAG = "Face Landmarker Overlay"
     }
 }
