@@ -76,12 +76,21 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
                 val indexFingerX = indexFingerPoint.x() * imageWidth * scaleFactor
                 val indexFingerY = indexFingerPoint.y() * imageHeight * scaleFactor
 
+                if (arraylistX.size <= 30){
+
+                }
+                else{
+                    arraylistX = arraylistX.drop(0) as ArrayList<Float>
+                    arraylistY = arraylistY.drop(0) as ArrayList<Float>
+                }
+
                 arraylistX.add(indexFingerX)
                 arraylistY.add(indexFingerY)
                 println(indexFingerX);
 
                 // Renderizar o ponto do dedo indicador
                 for (pontoX in arraylistX){
+                    canvas.drawColor(Color.TRANSPARENT)
                     canvas.drawPoint(pontoX, arraylistY[arraylistX.indexOf(pontoX)], pointPaint)
                 }
 
