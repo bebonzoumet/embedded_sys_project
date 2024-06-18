@@ -32,7 +32,7 @@ https://github.com/RuiSantosdotme/ESP32-CAM-Arduino-IDE/blob/master/ESP32-CAM-Vi
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#TESTES
+# TESTES
   Utilizamos alguns momentos das aulas para fazer apurações dos seguintes aspectos:
   
   Temperatura -> A placa age em uma temperatura média de 31°C sem a utilização da câmera;
