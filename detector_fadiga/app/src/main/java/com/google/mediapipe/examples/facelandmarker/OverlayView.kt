@@ -48,7 +48,7 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
     private var yep2: Float = 0f
 
     private var tempoOlhosFechados: Long = 0
-    private val intervaloCansado = 800000 //1 segundo = 100000
+    private val intervaloCansado = 2000 //1 segundo = 1000
 
     private var mediaPlayer: MediaPlayer? = null
 
